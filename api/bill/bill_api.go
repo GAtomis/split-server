@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:17:48
- * @LastEditTime: 2022-08-21 22:31:58
+ * @LastEditTime: 2022-09-14 16:58:05
  * @LastEditors: Gavin
  */
 package bill
@@ -83,14 +83,14 @@ func (api *BILL_TABLE_API) CreateBillTable(ctx *gin.Context) {
 	//成功JSON化
 	err := ctx.ShouldBindJSON(&newBilTable)
 	if err != nil {
-		utils.Fail(ctx)
+		utils.FailDM(err.Error(), "参数验证", ctx)
 		return
 	}
 	//载入api
 	r2 := new(rbac_core.BilTable)
 	res, err2 := r2.CreateItem(&newBilTable)
 	if err2 != nil {
-		utils.Fail(ctx)
+		utils.FailDM(err2.Error(), "请求错误", ctx)
 		return
 	}
 	utils.OkDM(res.ID, "操作成功", ctx)
@@ -116,18 +116,18 @@ func (api *BILL_TABLE_API) DeleteBillTable(ctx *gin.Context) {
 }
 
 func (api *BILL_TABLE_API) GetBillTable(ctx *gin.Context) {
-	var Primarykey global.Primarykey
-	_ = ctx.ShouldBindQuery(&Primarykey)
-	if err := utils.Verify(Primarykey, utils.Primarykey); err != nil {
+	var PrimaryUUID global.PrimaryUUID
+	_ = ctx.ShouldBindQuery(&PrimaryUUID)
+	if err := utils.Verify(PrimaryUUID, utils.Primarykey); err != nil {
 		utils.FailM(err.Error(), ctx)
 		return
 	}
 	//载入api
-	r2 := new(rbac_core.Permission)
+	r2 := new(rbac_core.BilTable)
 
-	res, err2 := r2.GetItem(&Primarykey)
+	res, err2 := r2.GetItem(&PrimaryUUID)
 	if err2 != nil {
-		utils.Fail(ctx)
+		utils.FailM(err2.Error(), ctx)
 		return
 	}
 	utils.OkDM(*res, "操作成功", ctx)

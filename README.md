@@ -2,13 +2,79 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-16 23:08:28
- * @LastEditTime: 2022-08-17 18:43:19
+ * @LastEditTime: 2022-09-14 17:09:26
  * @LastEditors: Gavin
 -->
 # split-server
 split对于后台
 
 
-#两次取JSON
+
+## 开发中遇到的坑
+### 两次从请求拦截取JSON
 ShouldBindingJSON 有问题
 需要使用的 ShouldBindingJsonWith解决
+
+### 使用导入时间戳
+[文档链接](https://juejin.cn/post/6844904114699108365)
+```
+const TimeFormat = "2006-01-02 15:04:05"
+
+type LocalTime time.Time
+
+func (t *LocalTime) UnmarshalJSON(data []byte) (err error) {
+	if len(data) == 2 {
+		*t = LocalTime(time.Time{})
+		return
+	}
+
+	now, err := time.Parse(`"`+TimeFormat+`"`, string(data))
+	*t = LocalTime(now)
+	return
+}
+
+func (t LocalTime) MarshalJSON() ([]byte, error) {
+	b := make([]byte, 0, len(TimeFormat)+2)
+	b = append(b, '"')
+	b = time.Time(t).AppendFormat(b, TimeFormat)
+	b = append(b, '"')
+	return b, nil
+}
+
+func (t LocalTime) Value() (driver.Value, error) {
+	if t.String() == "0001-01-01 00:00:00" {
+		return nil, nil
+	}
+	return []byte(time.Time(t).Format(TimeFormat)), nil
+}
+
+func (t *LocalTime) Scan(v interface{}) error {
+	tTime, _ := time.Parse("2006-01-02 15:04:05 +0800 CST", v.(time.Time).String())
+	*t = LocalTime(tTime)
+	return nil
+}
+
+func (t LocalTime) String() string {
+	return time.Time(t).Format(TimeFormat)
+}
+
+```
+
+
+### UUID作为主键
+```
+//业务
+
+type User struct{
+
+  	ID uuid.UUID `json:"id" gorm:"type:char(36);primary_key"` //uuid
+}
+//每次建立初始化钩子函数
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.ID = uuid.NewV4()
+	return
+}
+```
+
+### 使用UUID作为主键时,注意事项
+ * 接受类型一定要定义为string 且在数据层操作时候用特殊写法,否则会造成perload查询为空

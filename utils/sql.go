@@ -2,7 +2,7 @@
  * @Description: sql工具
  * @Author: Gavin
  * @Date: 2022-07-20 12:48:34
- * @LastEditTime: 2022-08-21 22:42:13
+ * @LastEditTime: 2022-09-06 13:58:44
  * @LastEditors: Gavin
  */
 package utils
@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"split-server/config"
 	"split-server/model/RBAC/request"
-
 	reqBiz "split-server/model/business/request"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -66,6 +65,7 @@ func (sql *SqlType) StartSQL() (db *gorm.DB, err error) {
 	bt := request.BilTable{}
 	br := request.BilRecord{}
 	db.AutoMigrate(&sr, &su, &sp, &bc, &bt, &br)
+	// db.AutoMigrate(&bt, &br)
 	sql.db = db
 	return db, err
 }
