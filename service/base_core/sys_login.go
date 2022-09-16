@@ -22,7 +22,7 @@ type Base struct {
 
 func (b Base) OldLogin(body reqBase.Login) (*respBase.Token, error) {
 	res, err := utils.InitSQL(func(db *gorm.DB) (any, error) {
-		var sr reqRBAC.SysUser
+		var sr reqRBAC.SysUserLogin
 		if err := db.AutoMigrate(&sr); err != nil {
 			return &body, err
 		}
@@ -34,9 +34,9 @@ func (b Base) OldLogin(body reqBase.Login) (*respBase.Token, error) {
 	if err != nil {
 		return &respBase.Token{Token: "获取失败"}, err
 	}
-	if isMatch(&body, res.(*reqRBAC.SysUser)) {
+	if isMatch(&body, res.(*reqRBAC.SysUserLogin)) {
 		jwt := new(utils.JWT)
-		s, err2 := jwt.InitJWT(*res.(*reqRBAC.SysUser))
+		s, err2 := jwt.InitJWT(*res.(*reqRBAC.SysUserLogin))
 		if err2 == nil {
 			return &respBase.Token{
 				Token: s,
@@ -49,7 +49,7 @@ func (b Base) Login(body reqBase.Login) (*respBase.Token, error) {
 
 	db := utils.GAA_SQL.GetDB()
 
-	var sr reqRBAC.SysUser
+	var sr reqRBAC.SysUserLogin
 	// if err := db.AutoMigrate(&sr); err != nil {
 	// 	return nil, err
 	// }
@@ -71,6 +71,6 @@ func (b Base) Login(body reqBase.Login) (*respBase.Token, error) {
 	return nil, err
 }
 
-func isMatch(target *reqBase.Login, source *reqRBAC.SysUser) bool {
+func isMatch(target *reqBase.Login, source *reqRBAC.SysUserLogin) bool {
 	return target.Password == source.Password
 }

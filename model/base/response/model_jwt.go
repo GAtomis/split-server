@@ -15,6 +15,6 @@ import (
 
 //JTW模版
 type MyClaims struct {
-	UserInfo request.SysUser
+	UserInfo request.SysUserLogin
 	jwt.StandardClaims
 }

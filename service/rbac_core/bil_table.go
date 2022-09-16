@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:26:04
- * @LastEditTime: 2022-09-14 16:59:03
+ * @LastEditTime: 2022-09-14 21:41:48
  * @LastEditors: Gavin
  */
 package rbac_core
@@ -17,23 +17,22 @@ type BilTable struct {
 }
 
 // //查询列表
-// func (r *Permission) GetList(body *request.SysPermission, info *global.PageInfo) (map[string]any, error) {
+func (b *BilTable) GetList(body *request.BilTable, info *global.PageInfo) (map[string]any, error) {
 
-// 	db := utils.GAA_SQL.GetDB()
-// 	limit := info.PageSize
-// 	offset := info.PageSize * (info.Page - 1)
-// 	var temp = new(request.SysPermission)
-// 	var result []request.SysPermission
-// 	var total int64 = 0
-// 	if err1 := db.Model(temp).Count(&total).Error; err1 != nil {
-// 		return nil, err1
-// 	}
-// 	if err2 := db.Model(temp).Limit(limit).Offset(offset).Find(&result).Error; err2 != nil {
-// 		return map[string]any{"item": nil, "total": total}, err2
-// 	}
-// 	return map[string]any{"item": result, "total": total}, nil
+	db := utils.GAA_SQL.GetDB()
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	var result []request.BilTable
+	var total int64 = 0
+	if err1 := db.Model(body).Count(&total).Error; err1 != nil {
+		return nil, err1
+	}
+	if err2 := db.Model(body).Limit(limit).Offset(offset).Find(&result).Error; err2 != nil {
+		return map[string]any{"item": nil, "total": total}, err2
+	}
+	return map[string]any{"item": result, "total": total}, nil
 
-// }
+}
 
 func (b *BilTable) CreateItem(body *request.BilTable) (*request.BilTable, error) {
 

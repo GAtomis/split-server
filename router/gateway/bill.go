@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:14:38
- * @LastEditTime: 2022-09-13 22:42:34
+ * @LastEditTime: 2022-09-14 21:43:56
  * @LastEditors: Gavin
  */
 package gateway
@@ -21,5 +21,6 @@ func (r *Router) InitBill(g *gin.RouterGroup) {
 	billGateway.GET("table", bt.GetBillTable)
 	billGateway.PUT("table", bt.UpdateBillTable)
 	billGateway.DELETE("table", bt.DeleteBillTable)
+	billGateway.GET("table/list", bt.GetBillTableList)
 
 }

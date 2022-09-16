@@ -1,8 +1,8 @@
 /*
  * @Description: 请输入....
  * @Author: Gavin
- * @Date: 2022-07-22 16:00:03
- * @LastEditTime: 2022-09-05 16:21:50
+ * @Date: 2022-09-15 11:43:43
+ * @LastEditTime: 2022-09-15 11:52:19
  * @LastEditors: Gavin
  */
 package RBAC
@@ -17,9 +17,12 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-func CreateUser(ctx *gin.Context) {
+type USER_ASSOCIATE_API struct {
+}
 
-	var newUser request.SysUser
+func (u *USER_ASSOCIATE_API) CreateUser(ctx *gin.Context) {
+
+	var newUser request.SysUserAssociate
 
 	err := ctx.ShouldBindBodyWith(&newUser, binding.JSON)
 	if err != nil {
@@ -27,7 +30,7 @@ func CreateUser(ctx *gin.Context) {
 		return
 	}
 	fmt.Printf("newUser: %v\n", newUser)
-	api := new(rbac_core.User)
+	api := new(rbac_core.UserAssociate)
 	res, err2 := api.CreateItem(newUser)
 	if err2 != nil {
 		utils.Fail(ctx)
@@ -37,7 +40,7 @@ func CreateUser(ctx *gin.Context) {
 
 }
 
-func GetUserInfo(ctx *gin.Context) {
+func (u *USER_ASSOCIATE_API) GetUserInfo(ctx *gin.Context) {
 	jwt := new(utils.JWT)
 	tokenInfo := jwt.GetUserInfo(ctx)
 	if tokenInfo != nil {
@@ -47,14 +50,14 @@ func GetUserInfo(ctx *gin.Context) {
 	}
 
 }
-func UpdateUser(ctx *gin.Context) {
+func (u *USER_ASSOCIATE_API) UpdateUser(ctx *gin.Context) {
 	jwt := new(utils.JWT)
 	tokenInfo := jwt.GetUserInfo(ctx)
-	var user request.SysUser
+	var user request.SysUserAssociate
 	ctx.ShouldBindJSON(&user)
 
 	if tokenInfo != nil {
-		api := new(rbac_core.User)
+		api := new(rbac_core.UserAssociate)
 		res, err2 := api.UpdateItem(user)
 		if err2 != nil {
 			utils.Fail(ctx)

@@ -2,7 +2,7 @@
  * @Description:权限
  * @Author: Gavin
  * @Date: 2022-08-03 10:53:48
- * @LastEditTime: 2022-08-21 22:32:09
+ * @LastEditTime: 2022-09-15 00:00:23
  * @LastEditors: Gavin
  */
 package RBAC
@@ -26,7 +26,7 @@ func (api *PERMISSION_API) GetPermissionByRoleId(ctx *gin.Context) {
 	MyClaims := jwt.GetUserInfo(ctx)
 	//载入api
 	r2 := new(rbac_core.Permission)
-	sp, err := r2.GetItemByRoleId(MyClaims.UserInfo.ID)
+	sp, err := r2.GetItemByRoleId(MyClaims.UserInfo.RoleId)
 	if err != nil {
 		utils.FailM("查询失败", ctx)
 		return

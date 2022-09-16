@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:17:48
- * @LastEditTime: 2022-09-14 16:58:05
+ * @LastEditTime: 2022-09-14 21:41:57
  * @LastEditors: Gavin
  */
 package bill
@@ -32,9 +32,9 @@ func (api *BILL_TABLE_API) GetBillTableList(ctx *gin.Context) {
 		utils.FailM(err.Error(), ctx)
 		return
 	}
-	var permission request.SysPermission
-	r2 := new(rbac_core.Permission)
-	if res, err2 := r2.GetList(&permission, &pageInfo); err2 != nil {
+	var BilTable request.BilTable
+	r2 := new(rbac_core.BilTable)
+	if res, err2 := r2.GetList(&BilTable, &pageInfo); err2 != nil {
 		utils.FailDM(res, err2.Error(), ctx)
 	} else {
 		utils.OkDM(res, "success", ctx)

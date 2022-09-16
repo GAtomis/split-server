@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-07-21 18:20:29
- * @LastEditTime: 2022-08-08 18:29:03
+ * @LastEditTime: 2022-09-14 23:49:23
  * @LastEditors: Gavin
  */
 package utils
@@ -36,14 +36,14 @@ var mySigningKey []byte
  * @return {string, error} 返回一个token
  * @Date: 2022-07-21 18:43:59
  */
-func (j *JWT) InitJWT(u reqRBAC.SysUser) (string, error) {
+func (j *JWT) InitJWT(u reqRBAC.SysUserLogin) (string, error) {
 
 	c := response.MyClaims{
 		UserInfo: u,
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 60,      //开始时间
 			ExpiresAt: time.Now().Unix() + 60*60*6, //过期时间
-			Issuer:    u.Name,                      //戳
+			Issuer:    u.Username,                  //戳
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, c)

@@ -2,7 +2,7 @@
  * @Description: sql工具
  * @Author: Gavin
  * @Date: 2022-07-20 12:48:34
- * @LastEditTime: 2022-09-06 13:58:44
+ * @LastEditTime: 2022-09-15 15:26:28
  * @LastEditors: Gavin
  */
 package utils
@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"split-server/config"
 	"split-server/model/RBAC/request"
-	reqBiz "split-server/model/business/request"
+	bzReq "split-server/model/business/request"
 
 	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
@@ -60,11 +60,13 @@ func (sql *SqlType) StartSQL() (db *gorm.DB, err error) {
 
 	sp := request.SysPermission{}
 	sr := request.SysRole{}
-	su := request.SysUser{}
-	bc := reqBiz.BizComment{}
+	sul := request.SysUserLogin{}
+	sui := request.SysUserInfo{}
+	// sua := request.SysUserAssociate{}
+	bz := bzReq.BizComment{}
 	bt := request.BilTable{}
 	br := request.BilRecord{}
-	db.AutoMigrate(&sr, &su, &sp, &bc, &bt, &br)
+	db.AutoMigrate(&sr, &sul, &sui, &sp, &bz, &bt, &br)
 	// db.AutoMigrate(&bt, &br)
 	sql.db = db
 	return db, err

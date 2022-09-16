@@ -2,7 +2,7 @@
  * @Description: 工具
  * @Author: Gavin
  * @Date: 2022-07-20 11:14:40
- * @LastEditTime: 2022-07-21 17:43:49
+ * @LastEditTime: 2022-09-15 18:10:04
  * @LastEditors: Gavin
  */
 package utils
@@ -20,8 +20,9 @@ type Response struct {
 }
 
 const (
-	ERROR   = 7
-	SUCCESS = 0
+	ERROR     = 7
+	SUCCESS   = 0
+	NOT_FOUND = 44
 )
 
 /**
@@ -34,7 +35,11 @@ const (
  * @Date: 2022-07-20 11:26:25
  */
 func Result(code int, result any, msg string, c *gin.Context) {
-	// 开始时间
+
+	if result == "record not found" {
+		code = NOT_FOUND
+		result = map[string]interface{}{}
+	}
 	c.JSON(http.StatusOK, Response{
 		code,
 		result,

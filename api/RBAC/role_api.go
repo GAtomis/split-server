@@ -2,7 +2,7 @@
  * @Description: api层 RBAC
  * @Author: Gavin
  * @Date: 2022-07-19 17:56:36
- * @LastEditTime: 2022-08-13 20:19:25
+ * @LastEditTime: 2022-09-15 15:05:57
  * @LastEditors: Gavin
  */
 package RBAC
@@ -16,13 +16,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ROLE_API struct {
+}
+
 /**
  * @description: 修改角色
  * @param {*gin.Context} ctx
  * @return {*}
  * @Date: 2022-08-04 18:02:51
  */
-func UpdateRole(ctx *gin.Context) {
+func (r *ROLE_API) UpdateRole(ctx *gin.Context) {
 	//声明一个SysRole
 	var newSysRole request.SysRole
 	//成功JSON化
@@ -50,20 +53,20 @@ func UpdateRole(ctx *gin.Context) {
 // @Param data body request.Empty true "空"
 // @Success 200 {object} response.Response{data=systemRes.SysMenusResponse,msg=string} "获取用户动态路由,返回包括系统菜单详情列表"
 // @Router /menu/getMenu [post]
-func CreateRole(ctx *gin.Context) {
+func (r *ROLE_API) CreateRole(ctx *gin.Context) {
 	//声明一个SysRole
 	var newSysRole request.SysRole
 	//成功JSON化
 	err := ctx.ShouldBindJSON(&newSysRole)
 	if err != nil {
-		utils.Fail(ctx)
+		utils.FailM(err.Error(), ctx)
 		return
 	}
 	//载入api
 	r2 := new(rbac_core.Role)
 	res, err2 := r2.CreateItem(newSysRole)
 	if err2 != nil {
-		utils.Fail(ctx)
+		utils.FailM(err2.Error(), ctx)
 		return
 	}
 	utils.OkDM(res.ID, "操作成功", ctx)
@@ -76,7 +79,7 @@ func CreateRole(ctx *gin.Context) {
 // @Param data body request.Empty true "空"
 // @Success 200 {object} response.Response{data=systemRes.SysMenusResponse,msg=string} "获取用户动态路由,返回包括系统菜单详情列表"
 // @Router /menu/getMenu [post]
-func GetRole(ctx *gin.Context) {
+func (r *ROLE_API) GetRole(ctx *gin.Context) {
 
 	var Primarykey global.Primarykey
 
@@ -103,7 +106,7 @@ func GetRole(ctx *gin.Context) {
  * @return {*}
  * @Date: 2022-08-04 17:57:34
  */
-func GetRoleList(ctx *gin.Context) {
+func (r *ROLE_API) GetRoleList(ctx *gin.Context) {
 	var pageInfo global.PageInfo
 	_ = ctx.ShouldBindQuery(&pageInfo)
 
