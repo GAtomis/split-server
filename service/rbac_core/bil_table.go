@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:26:04
- * @LastEditTime: 2022-09-21 19:27:50
+ * @LastEditTime: 2022-09-21 19:54:49
  * @LastEditors: Gavin
  */
 package rbac_core
@@ -83,9 +83,9 @@ func (b *BilTable) UpdateBilTableInfo(body *request.BilTable) (*request.BilTable
 		if err := tx.Model(body).Association("SysUsers").Replace(&body.SysUsers); err != nil {
 			return err
 		}
-		// if err := tx.Model(body).Association("BilRecords").Replace(&body.BilRecords); err != nil {
-		// 	return err
-		// }
+		if err := tx.Model(body).Association("BilRecords").Replace(&body.BilRecords); err != nil {
+			return err
+		}
 
 		return nil
 	})
