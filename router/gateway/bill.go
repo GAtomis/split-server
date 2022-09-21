@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:14:38
- * @LastEditTime: 2022-09-14 21:43:56
+ * @LastEditTime: 2022-09-20 13:19:05
  * @LastEditors: Gavin
  */
 package gateway
@@ -22,5 +22,8 @@ func (r *Router) InitBill(g *gin.RouterGroup) {
 	billGateway.PUT("table", bt.UpdateBillTable)
 	billGateway.DELETE("table", bt.DeleteBillTable)
 	billGateway.GET("table/list", bt.GetBillTableList)
+	billGateway.GET("GetTableListByUserId", bt.GetBillTableListByUserId)
 
+	br := new(bill.BILL_RECROD_API)
+	billGateway.GET("recrod", br.GetBillRecrodList)
 }

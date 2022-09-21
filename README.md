@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-16 23:08:28
- * @LastEditTime: 2022-09-14 17:09:26
+ * @LastEditTime: 2022-09-21 19:10:12
  * @LastEditors: Gavin
 -->
 # split-server
@@ -67,11 +67,11 @@ func (t LocalTime) String() string {
 
 type User struct{
 
-  	ID uuid.UUID `json:"id" gorm:"type:char(36);primary_key"` //uuid
+  	ID string `json:"id" gorm:"type:char(36);primary_key"` //uuid
 }
 //每次建立初始化钩子函数
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewV4()
+	u.ID = uuid.NewV4().string()
 	return
 }
 ```

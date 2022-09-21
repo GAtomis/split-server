@@ -2,7 +2,7 @@
  * @Description: user模块
  * @Author: Gavin
  * @Date: 2022-07-22 13:55:29
- * @LastEditTime: 2022-09-16 13:07:46
+ * @LastEditTime: 2022-09-19 18:06:59
  * @LastEditors: Gavin
  */
 package gateway
@@ -24,4 +24,5 @@ func (r *Router) InitUserRouter(g *gin.RouterGroup) {
 	userGateway.PUT("userInfo", infoApi.UpdateUser)
 	userGateway.POST("userInfo", infoApi.CreateUser)
 	userGateway.POST("addUserInfo", infoApi.CreateInfoByToken)
+	userGateway.POST("getInfoListByName", infoApi.GetInfoListByName)
 }

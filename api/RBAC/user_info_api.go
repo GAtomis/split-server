@@ -2,7 +2,7 @@
  * @Description: 用户信息表
  * @Author: Gavin
  * @Date: 2022-09-15 10:37:31
- * @LastEditTime: 2022-09-16 14:54:25
+ * @LastEditTime: 2022-09-21 19:00:48
  * @LastEditors: Gavin
  */
 package RBAC
@@ -48,7 +48,7 @@ func (u *USER_INFO_API) GetUserInfo(ctx *gin.Context) {
 	tokenInfo := jwt.GetUserInfo(ctx)
 	id := tokenInfo.UserInfo.ID
 	api := new(rbac_core.UserInfo)
-	if res, err2 := api.GetItemById(&global.PrimaryUUID{ID: id.String()}); err2 != nil {
+	if res, err2 := api.GetItemById(&global.PrimaryUUID{ID: id}); err2 != nil {
 
 		utils.FailDM(err2.Error(), "操作异常", ctx)
 	} else {
@@ -82,17 +82,22 @@ func (u *USER_INFO_API) UpdateUser(ctx *gin.Context) {
 
 }
 
+/**
+ * @description: 创建用户信息通过用户token
+ * @param {*gin.Context} ctx
+ * @return {*}
+ * @Date: 2022-09-18 23:43:50
+ */
 func (u *USER_INFO_API) CreateInfoByToken(ctx *gin.Context) {
 
 	jwt := new(utils.JWT)
 	tokenInfo := jwt.GetUserInfo(ctx)
 	id := tokenInfo.UserInfo.ID
 	api := new(rbac_core.UserInfo)
-	api.GetItemById(&global.PrimaryUUID{ID: id.String()})
+	api.GetItemById(&global.PrimaryUUID{ID: id})
 
-	if _, err := api.GetItemById(&global.PrimaryUUID{ID: id.String()}); err != nil {
+	if _, err := api.GetItemById(&global.PrimaryUUID{ID: id}); err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-
 			var user request.SysUserInfo
 			ctx.ShouldBindJSON(&user)
 			user.ID = tokenInfo.UserInfo.ID
@@ -110,6 +115,28 @@ func (u *USER_INFO_API) CreateInfoByToken(ctx *gin.Context) {
 		}
 	} else {
 		utils.FailM("当前用户非新用户", ctx)
+	}
+
+}
+
+//通过名称关键字查询用户列表
+func (u *USER_INFO_API) GetInfoListByName(ctx *gin.Context) {
+	var searchParams global.SearchParams
+	if err := ctx.ShouldBindJSON(&searchParams); err != nil {
+		utils.FailM("参数异常", ctx)
+		return
+	}
+	// utils.FailM("参数验证通过", ctx)
+
+	api := new(rbac_core.UserInfo)
+
+	if res, err := api.GetInfoListByName(&searchParams); err != nil {
+
+		utils.Fail(ctx)
+
+	} else {
+
+		utils.OkDM(res, "请求成功", ctx)
 	}
 
 }

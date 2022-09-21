@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-07-18 16:58:15
- * @LastEditTime: 2022-09-16 11:58:07
+ * @LastEditTime: 2022-09-21 19:01:08
  * @LastEditors: Gavin
  */
 package request
@@ -16,9 +16,9 @@ import (
 )
 
 type SysUserLogin struct {
-	ID uuid.UUID `json:"id" gorm:"type:char(36);primary_key"`
+	ID string `json:"id" gorm:"type:char(36);primary_key"`
 	global.NoIDModel
-	Username string `json:"username" gorm:"type:varchar(64);comment:姓名;"`
+	Username string `json:"username" gorm:"type:varchar(64);comment:姓名;unique_index"`
 	Password string `json:"password" gorm:"type:varchar(32);comment:密码;"`
 	Salt     string `json:"salt" gorm:"type:varchar(128);comment:盐;"`
 	Locked   bool   `json:"locked" gorm:"comment:账号是否锁定，1：锁定，0未锁定;default:false"`
@@ -26,27 +26,26 @@ type SysUserLogin struct {
 }
 
 func (u *SysUserLogin) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewV4()
+	u.ID = uuid.NewV4().String()
 	return
 }
 
 type SysUserInfo struct {
-	ID uuid.UUID `json:"id" gorm:"type:char(36);primary_key"`
+	ID string `json:"id" gorm:"type:char(36);primary_key"`
 	global.NoIDModel
+	Username    string               `json:"username" gorm:"type:varchar(64);comment:姓名;unique_index"`
 	Name        string               `json:"name" gorm:"type:varchar(32);comment:姓名;"`
 	Avatar      string               `json:"avatar" gorm:"type:varchar(255);comment:头像;default:https://avatars.githubusercontent.com/u/40788938?v=4;"`
 	JobType     string               `json:"jobType" gorm:"type:varchar(32);comment:职位;"`
 	Company     string               `json:"company" gorm:"type:varchar(32);comment:公司;"`
 	CatchPhrase string               `json:"catchPhrase" gorm:"type:varchar(255);comment:个人简介;"`
 	Gender      uint                 `json:"gender" gorm:"comment:性别1-男,2-女;default:1"`
-	BilRecords  []BilRecord          `json:"bilRecords" gorm:"foreignKey:CreatorId;comment:账单条目;"`
 	BizComments []request.BizComment `json:"bizComments" gorm:"foreignKey:UserId;comment:评论条目;"`
 	BilTables   []BilTable           `json:"bilTables" gorm:"many2many:bil_table_user;comment:绑定评论;"`
-	// CreatedBilTables []BilTable           `json:"createBilTables" gorm:"foreignKey:CreatorId;comment:账单条目;"`
 }
 
 type SysUserAssociate struct {
-	ID uuid.UUID `json:"id" gorm:"type:char(36);primary_key"`
+	ID string `json:"id" gorm:"type:char(36);primary_key"`
 	global.NoIDModel
 }
 

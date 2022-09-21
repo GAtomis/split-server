@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:26:04
- * @LastEditTime: 2022-09-14 21:41:48
+ * @LastEditTime: 2022-09-21 19:27:50
  * @LastEditors: Gavin
  */
 package rbac_core
@@ -11,6 +11,8 @@ import (
 	"split-server/model/RBAC/request"
 	"split-server/model/global"
 	"split-server/utils"
+
+	"gorm.io/gorm"
 )
 
 type BilTable struct {
@@ -42,20 +44,51 @@ func (b *BilTable) CreateItem(body *request.BilTable) (*request.BilTable, error)
 
 }
 
-// func (p *Permission) UpdateItem(body *request.SysPermission) (*request.SysPermission, error) {
-// 	db := utils.GAA_SQL.GetDB()
-// 	err := db.Model(body).Updates(body).Error
-// 	return body, err
-// }
-
-// func (p *Permission) DelItem(body *request.SysPermission) (*request.SysPermission, error) {
-// 	db := utils.GAA_SQL.GetDB()
-// 	err := db.Delete(body).Error
-// 	return body, err
-// }
 func (b *BilTable) GetItem(body *global.PrimaryUUID) (*request.BilTable, error) {
 	db := utils.GAA_SQL.GetDB()
 	result := request.BilTable{}
-	err := db.Model(&result).Preload("BilRecords").First(&result, "id = ?", body.ID).Error
+	err := db.Model(&result).Preload("BilRecords.Creator").Preload("SysUsers").Preload("Creator").First(&result, "id = ?", body.ID).Error
 	return &result, err
+}
+func (b *BilTable) GetBillTableListByUserId(body *global.PrimaryUUID) (*[]request.BilTable, error) {
+	db := utils.GAA_SQL.GetDB()
+	var result []request.BilTable
+
+	userInfo := request.SysUserInfo{
+		ID: body.ID,
+	}
+	err := db.Model(&userInfo).Preload("Creator").Preload("SysUsers").Association("BilTables").Find(&result)
+	return &result, err
+}
+
+func (b *BilTable) UpdateSysUsers(body *request.BilTable) error {
+	db := utils.GAA_SQL.GetDB()
+	sui := body.SysUsers
+	err := db.Model(body).Association("SysUsers").Replace(&sui)
+	return err
+}
+func (b *BilTable) UpdateBilRecords(body *request.BilTable) error {
+	db := utils.GAA_SQL.GetDB()
+	br := body.BilRecords
+	err := db.Model(body).Association("BilRecords").Replace(&br)
+	return err
+}
+func (b *BilTable) UpdateBilTableInfo(body *request.BilTable) (*request.BilTable, error) {
+	db := utils.GAA_SQL.GetDB()
+
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(body).Omit("Creator", "SysUsers", "BilRecords", "ID").Updates(body).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(body).Association("SysUsers").Replace(&body.SysUsers); err != nil {
+			return err
+		}
+		// if err := tx.Model(body).Association("BilRecords").Replace(&body.BilRecords); err != nil {
+		// 	return err
+		// }
+
+		return nil
+	})
+
+	return body, err
 }

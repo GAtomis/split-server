@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-07-27 22:17:49
- * @LastEditTime: 2022-09-15 15:59:15
+ * @LastEditTime: 2022-09-18 23:47:07
  * @LastEditors: Gavin
  */
 package global
@@ -35,8 +35,12 @@ type PrimaryUUID struct {
 
 }
 
+type SearchParams struct {
+	Searchkey string `json:"searchkey" form:"searchkey"`
+}
+
 // type UUID struct {
-// 	ID uuid.UUID `gorm:"primarykey; type:uuid;default:uuid_generate_v4()"`
+// 	ID string `gorm:"primarykey; type:uuid;default:uuid_generate_v4()"`
 // }
 type NoIDModel struct {
 	CreatedAt time.Time      `json:"createdAt" `
