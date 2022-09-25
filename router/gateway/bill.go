@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:14:38
- * @LastEditTime: 2022-09-20 13:19:05
+ * @LastEditTime: 2022-09-25 10:19:01
  * @LastEditors: Gavin
  */
 package gateway
@@ -24,6 +24,12 @@ func (r *Router) InitBill(g *gin.RouterGroup) {
 	billGateway.GET("table/list", bt.GetBillTableList)
 	billGateway.GET("GetTableListByUserId", bt.GetBillTableListByUserId)
 
-	br := new(bill.BILL_RECROD_API)
-	billGateway.GET("recrod", br.GetBillRecrodList)
+	br := new(bill.BILL_RECORD_API)
+
+	//账单记录CRUD
+	billGateway.GET("record/list", br.GetBillRecordList)
+	billGateway.POST("record", br.CreateItem)
+	billGateway.PUT("record", br.UpdateItem)
+	billGateway.DELETE("record", br.DeleteItem)
+
 }

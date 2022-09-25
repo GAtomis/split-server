@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-07-21 15:57:48
- * @LastEditTime: 2022-08-17 16:53:27
+ * @LastEditTime: 2022-09-24 12:09:47
  * @LastEditors: Gavin
  */
 
@@ -27,4 +27,8 @@ func (r *Router) InitComment(g *gin.RouterGroup) {
 	ca := new(base.COMMENT_API)
 	roleGateway.GET("getComments", ca.GetCommentsByUid)
 	roleGateway.POST("comment", ca.CreateComment)
+}
+func (r *Router) InitTool(g *gin.RouterGroup) {
+	baseRouter := g.Group("base").Use(interceptor.MiddleCommon()).Use(interceptor.JWTAuth())
+	baseRouter.GET("getUUID", base.GetUUID)
 }
