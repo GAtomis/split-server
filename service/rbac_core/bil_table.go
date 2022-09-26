@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:26:04
- * @LastEditTime: 2022-09-24 22:49:44
+ * @LastEditTime: 2022-09-25 14:09:13
  * @LastEditors: Gavin
  */
 package rbac_core
@@ -46,15 +46,29 @@ func (b *BilTable) GetItem(body *global.PrimaryUUID) (*request.BilTable, error) 
 	err := db.Model(&result).Preload("BilRecords.Creator").Preload("SysUsers").Preload("Creator").First(&result, "id = ?", body.ID).Error
 	return &result, err
 }
-func (b *BilTable) GetBillTableListByUserId(body *global.PrimaryUUID) (*[]request.BilTable, error) {
+func (b *BilTable) GetBillTableListByUserId(body *global.PrimaryUUID, pageInfo *global.PageInfo) (map[string]any, error) {
 	db := utils.GAA_SQL.GetDB()
-	var result []request.BilTable
 
 	userInfo := request.SysUserInfo{
 		ID: body.ID,
 	}
-	err := db.Model(&userInfo).Preload("Creator").Preload("SysUsers").Preload("BilRecords").Association("BilTables").Find(&result)
-	return &result, err
+	limit := pageInfo.PageSize
+	offset := pageInfo.PageSize * (pageInfo.Page - 1)
+	var result []request.BilTable
+
+	total := db.Model(&userInfo).Association("BilTables").Count()
+
+	if err := db.Model(&userInfo).Limit(limit).Offset(offset).Preload("Creator").Preload("SysUsers").Preload("BilRecords").Association("BilTables").Find(&result); err != nil {
+
+		return map[string]any{"item": nil, "total": total}, err
+	}
+	return map[string]any{"item": result, "total": total}, nil
+	// var result []request.BilTable
+
+	// userInfo := request.SysUserInfo{
+	// 	ID: body.ID,
+	// }
+
 }
 
 // func (b *BilTable) UpdateSysUsers(body *request.BilTable) error {

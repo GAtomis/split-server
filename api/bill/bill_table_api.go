@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:17:48
- * @LastEditTime: 2022-09-21 19:12:00
+ * @LastEditTime: 2022-09-25 14:10:10
  * @LastEditors: Gavin
  */
 package bill
@@ -152,19 +152,24 @@ func (api *BILL_TABLE_API) GetBillTable(ctx *gin.Context) {
  */
 func (api *BILL_TABLE_API) GetBillTableListByUserId(ctx *gin.Context) {
 	var PrimaryUUID global.PrimaryUUID
-
 	jwt := new(utils.JWT)
 	tokenInfo := jwt.GetUserInfo(ctx)
 	id := tokenInfo.UserInfo.ID
 	PrimaryUUID.ID = id
-
 	r2 := new(rbac_core.BilTable)
 
-	res, err2 := r2.GetBillTableListByUserId(&PrimaryUUID)
+	var pageInfo global.PageInfo
+	_ = ctx.ShouldBindQuery(&pageInfo)
+	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+		utils.FailM(err.Error(), ctx)
+		return
+	}
+
+	res, err2 := r2.GetBillTableListByUserId(&PrimaryUUID, &pageInfo)
 	if err2 != nil {
 		utils.FailM(err2.Error(), ctx)
 		return
 	}
-	utils.OkDM(*res, "操作成功", ctx)
+	utils.OkDM(res, "success", ctx)
 
 }
