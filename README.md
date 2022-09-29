@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-16 23:08:28
- * @LastEditTime: 2022-09-21 19:10:12
+ * @LastEditTime: 2022-09-29 10:28:32
  * @LastEditors: Gavin
 -->
 # split-server
@@ -78,3 +78,8 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 
 ### 使用UUID作为主键时,注意事项
  * 接受类型一定要定义为string 且在数据层操作时候用特殊写法,否则会造成perload查询为空
+
+
+## 完成目标
+* 第一阶段已完成(账单基础CRUD功能)
+* 数据分析未完成
