@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-09-20 11:14:50
- * @LastEditTime: 2022-09-24 22:05:56
+ * @LastEditTime: 2022-10-03 13:41:46
  * @LastEditors: Gavin
  */
 package bill
@@ -20,14 +20,22 @@ type BILL_RECORD_API struct {
 }
 
 func (b BILL_RECORD_API) GetBillRecordList(ctx *gin.Context) {
-	var PrimaryUUID global.PrimaryUUID
-	_ = ctx.ShouldBindQuery(&PrimaryUUID)
-	if err := utils.Verify(PrimaryUUID, utils.Primarykey); err != nil {
+
+	var body request.BilRecord
+	if err := ctx.ShouldBindJSON(&body); err != nil {
 		utils.FailM(err.Error(), ctx)
 		return
 	}
+
+	var pageInfo global.PageInfo
+	_ = ctx.ShouldBindQuery(&pageInfo)
+	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+		utils.FailM(err.Error(), ctx)
+		return
+	}
+
 	api := new(rbac_core.BilRecord)
-	if res, err := api.GetRecordList(&PrimaryUUID); err != nil {
+	if res, err := api.GetRecordList(&body, &pageInfo); err != nil {
 
 		utils.FailM(err.Error(), ctx)
 		return

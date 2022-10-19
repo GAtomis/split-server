@@ -2,7 +2,7 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-21 22:14:38
- * @LastEditTime: 2022-09-25 10:19:01
+ * @LastEditTime: 2022-10-03 14:14:02
  * @LastEditors: Gavin
  */
 package gateway
@@ -27,7 +27,7 @@ func (r *Router) InitBill(g *gin.RouterGroup) {
 	br := new(bill.BILL_RECORD_API)
 
 	//账单记录CRUD
-	billGateway.GET("record/list", br.GetBillRecordList)
+	billGateway.POST("record/list", br.GetBillRecordList)
 	billGateway.POST("record", br.CreateItem)
 	billGateway.PUT("record", br.UpdateItem)
 	billGateway.DELETE("record", br.DeleteItem)
