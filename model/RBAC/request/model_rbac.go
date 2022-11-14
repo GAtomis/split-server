@@ -2,37 +2,27 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-07-18 16:58:15
- * @LastEditTime: 2022-09-21 19:01:08
- * @LastEditors: Gavin
+ * @LastEditTime: 2022-11-15 00:01:23
+ * @LastEditors: Gavin 850680822@qq.com
  */
 package request
 
 import (
 	"split-server/model/business/request"
 	"split-server/model/global"
-
-	uuid "github.com/satori/go.uuid"
-	"gorm.io/gorm"
 )
 
 type SysUserLogin struct {
-	ID string `json:"id" gorm:"type:char(36);primary_key"`
-	global.NoIDModel
+	global.DBModel
 	Username string `json:"username" gorm:"type:varchar(64);comment:姓名;unique_index"`
 	Password string `json:"password" gorm:"type:varchar(32);comment:密码;"`
 	Salt     string `json:"salt" gorm:"type:varchar(128);comment:盐;"`
 	Locked   bool   `json:"locked" gorm:"comment:账号是否锁定，1：锁定，0未锁定;default:false"`
-	RoleId   uint   `json:"roleId" gorm:"comment:权限ID;default:1"`
-}
-
-func (u *SysUserLogin) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewV4().String()
-	return
+	RoleId   string `json:"roleId" gorm:"comment:权限ID;default:1"`
 }
 
 type SysUserInfo struct {
-	ID string `json:"id" gorm:"type:char(36);primary_key"`
-	global.NoIDModel
+	global.DBModel
 	Username    string               `json:"username" gorm:"type:varchar(64);comment:姓名;unique_index"`
 	Name        string               `json:"name" gorm:"type:varchar(32);comment:姓名;"`
 	Avatar      string               `json:"avatar" gorm:"type:varchar(255);comment:头像;default:https://avatars.githubusercontent.com/u/40788938?v=4;"`
@@ -42,11 +32,6 @@ type SysUserInfo struct {
 	Gender      uint                 `json:"gender" gorm:"comment:性别1-男,2-女;default:1"`
 	BizComments []request.BizComment `json:"bizComments" gorm:"foreignKey:UserId;comment:评论条目;"`
 	BilTables   []BilTable           `json:"bilTables" gorm:"many2many:bil_table_user;comment:绑定评论;"`
-}
-
-type SysUserAssociate struct {
-	ID string `json:"id" gorm:"type:char(36);primary_key"`
-	global.NoIDModel
 }
 
 type SysRole struct {

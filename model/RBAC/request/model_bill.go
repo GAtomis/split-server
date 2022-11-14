@@ -2,21 +2,17 @@
  * @Description: 请输入....
  * @Author: Gavin
  * @Date: 2022-08-18 23:07:43
- * @LastEditTime: 2022-10-03 13:25:33
- * @LastEditors: Gavin
+ * @LastEditTime: 2022-11-15 00:02:35
+ * @LastEditors: Gavin 850680822@qq.com
  */
 package request
 
 import (
 	"split-server/model/global"
-
-	uuid "github.com/satori/go.uuid"
-	"gorm.io/gorm"
 )
 
 type BilTable struct {
-	ID string `json:"id" gorm:"type:char(36);primary_key"`
-	global.NoIDModel
+	global.DBModel
 	Name       string        `json:"name" gorm:"type:varchar(64);comment:标题; not null;"`
 	Describe   string        `json:"describe" gorm:"type:varchar(255);comment:描述;"`
 	StartTime  uint64        `json:"startTime" gorm:"comment:开始时间;" `
@@ -31,14 +27,8 @@ type BilTable struct {
 	Creator    SysUserInfo   `json:"creator" gorm:"foreignKey:CreatorId"`
 }
 
-func (u *BilTable) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewV4().String()
-	return
-}
-
 type BilRecord struct {
-	ID string `json:"id" gorm:"type:char(36);primary_key"`
-	global.NoIDModel
+	global.DBModel
 	Price     string      `json:"price" gorm:"comment:价格;not null;"`
 	Describe  string      `json:"describe" gorm:"type:varchar(255);comment:描述;"`
 	StartTime uint64      `json:"startTime" gorm:"comment:开始时间;" `
@@ -50,9 +40,4 @@ type BilRecord struct {
 	CreatorId string      `json:"creatorId" gorm:"type:char(36);comment:创建者ID"`
 	Creator   SysUserInfo `json:"creator" gorm:"foreignKey:CreatorId"`
 	TableId   string      `json:"tableId" gorm:"type:char(36);comment:封面"`
-}
-
-func (u *BilRecord) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewV4().String()
-	return
 }
